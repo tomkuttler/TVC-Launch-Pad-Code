@@ -29,6 +29,9 @@ int R_LED = 41;
 int G_LED = 40;
 int B_LED = 39;
 
+// Buzzer Pin
+int Buzzer = 37;
+
 // Timer for HC-12
 unsigned long last = millis();
 
@@ -154,6 +157,8 @@ void setup() {
   digitalWrite(R_LED, HIGH);
   digitalWrite(G_LED, LOW);
   digitalWrite(B_LED, HIGH);
+
+  buzzerReadyTone();
 }
 
 void loop() {
@@ -294,4 +299,24 @@ void firePyrochannels() {
   digitalWrite(Pyro3, HIGH);
   digitalWrite(Pyro4, HIGH);
   digitalWrite(Pyro5, HIGH);
+}
+
+void buzzerReadyTone() {
+  tone(Buzzer, 2000); delay(50); noTone(Buzzer); delay(75);
+  tone(Buzzer, 2000); delay(50); noTone(Buzzer); delay(200);
+  tone(Buzzer, 1000); delay(50); noTone(Buzzer); delay(75);
+  tone(Buzzer, 1000); delay(50); noTone(Buzzer); delay(400);
+
+  tone(Buzzer, 1319); delay(50); noTone(Buzzer);
+  delay(50);
+  tone(Buzzer, 1760); delay(50); noTone(Buzzer);
+  delay(50);
+  tone(Buzzer, 2217); delay(50); noTone(Buzzer);
+  delay(50);
+  tone(Buzzer, 2637); delay(100); noTone(Buzzer);
+  delay(100);
+  tone(Buzzer, 2217); delay(50); noTone(Buzzer);
+  delay(50);
+  tone(Buzzer, 2637); delay(200); noTone(Buzzer);
+  delay(400);
 }
