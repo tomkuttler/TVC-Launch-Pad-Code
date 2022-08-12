@@ -95,7 +95,8 @@ void setup() {
   lcd.print("Launch command");
 
   delay(5000);
-
+  tone(Buzzer, 2000); delay(50); noTone(Buzzer); delay(75);
+  
   // Attach Servos and bring them in start position
   servo1.attach(0);
   servo2.attach(1);
@@ -206,10 +207,10 @@ void loop() {
       servo67detached = true;
     }
     else if(!servo891011activated && countdownTime < servo891011Time) {
-      servo8.attach(0);
-      servo9.attach(1);
-      servo10.attach(2);
-      servo11.attach(3);
+      servo8.attach(7);
+      servo9.attach(8);
+      servo10.attach(9);
+      servo11.attach(10);
       
       servo8.write(175);
       servo9.write(175);
