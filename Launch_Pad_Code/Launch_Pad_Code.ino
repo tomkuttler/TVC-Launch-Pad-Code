@@ -52,6 +52,8 @@ bool servo1234activated = false;          // True if servos have been activated
 bool servo1234detached = false;           // True if servos have been detached
 bool servo67activated = false;            // True if servos have been activated
 bool servo67detached = false;             // True if servos have been detached
+bool servo891011activated = false;        // True if servos have been activated
+bool servo891011detached = false;         // True if servos have been detached
 
 // Servo delay between activation and detaching (non blocking)
 unsigned long servoDelay = 1000;          // In ms
@@ -189,25 +191,40 @@ void loop() {
       servo1234detached = true;
     }
     else if(!servo67activated && countdownTime < servo67Time) {
-      servo1.attach(0);
-      servo2.attach(1);
-      servo3.attach(2);
-      servo4.attach(3);
+      servo6.attach(5);
+      servo7.attach(6);
       
-      servo1.write(145);
-      servo2.write(35);
-      servo3.write(135);
-      servo4.write(35);
+      servo6.write(35);
+      servo7.write(160);
       
       servo67activated = true;
     }
     else if (!servo67detached && countdownTime < (servo67Time - servoDelay)) {
-      servo1.detach();
-      servo2.detach();
-      servo3.detach();
-      servo4.detach();
+      servo6.detach();
+      servo7.detach();
 
       servo67detached = true;
+    }
+    else if(!servo891011activated && countdownTime < servo891011Time) {
+      servo8.attach(0);
+      servo9.attach(1);
+      servo10.attach(2);
+      servo11.attach(3);
+      
+      servo8.write(175);
+      servo9.write(175);
+      servo10.write(175);
+      servo11.write(175);
+      
+      servo891011activated = true;
+    }
+    else if (!servo891011detached && countdownTime < (servo891011Time - servoDelay)) {
+      servo8.detach();
+      servo9.detach();
+      servo10.detach();
+      servo11.detach();
+
+      servo891011detached = true;
     }
   }
 }
