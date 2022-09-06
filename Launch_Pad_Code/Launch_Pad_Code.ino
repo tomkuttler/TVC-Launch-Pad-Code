@@ -49,8 +49,8 @@ bool countdownRunning = false;            // True if contdown is running
 unsigned long abortTime;                  // The time when abort signal was received
 
 // Launch event servo variables
-unsigned long servo1234Time = 20000;      // Time when Stabilizer will open before Countdown hits 0 (in ms)
-unsigned long servo67Time = 18000;        // Time when Strongback will retract before Countdown hits 0 (in ms)
+unsigned long servo1234Time = 15000;      // Time when Stabilizer will open before Countdown hits 0 (in ms)
+unsigned long servo67Time = 13000;        // Time when Strongback will retract before Countdown hits 0 (in ms)
 unsigned long servo891011Time = 150;      // Time when Launch Clamps will retract before Countdown hits 0 (in ms)
 bool servo1234activated = false;          // True if servos have been activated
 bool servo1234detached = false;           // True if servos have been detached
