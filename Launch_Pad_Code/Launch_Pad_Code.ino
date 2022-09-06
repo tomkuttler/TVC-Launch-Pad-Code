@@ -36,17 +36,21 @@ int Buzzer = 37;
 unsigned long last = millis();
 
 // Countdown variables
-const int inputTime = 40000;              // How long the countdown should be (in ms)
+const int inputTime = 30000;              // How long the countdown should be (in ms)
 long countdownTime;                       // Countdown counter variable
 unsigned long minutes;                    // Countdown minutes
 unsigned long seconds;                    // Countdown seconds
 unsigned long countdownStartTime;         // Millis at countdown start
 unsigned long elapsedTime;                // Time since countdown started
+bool startSignalReceived = false;         // Will be true if start signal was received
 bool countdownRunning = false;            // True if contdown is running
 
-// Launch event variables
-unsigned long servo1234Time = 30000;      // Time when Stabilizer will open before Countdown hits 0 (in ms)
-unsigned long servo67Time = 25000;        // Time when Strongback will retract before Countdown hits 0 (in ms)
+// Abort (pause) variables
+unsigned long abortTime;                  // The time when abort signal was received
+
+// Launch event servo variables
+unsigned long servo1234Time = 20000;      // Time when Stabilizer will open before Countdown hits 0 (in ms)
+unsigned long servo67Time = 18000;        // Time when Strongback will retract before Countdown hits 0 (in ms)
 unsigned long servo891011Time = 150;      // Time when Launch Clamps will retract before Countdown hits 0 (in ms)
 bool servo1234activated = false;          // True if servos have been activated
 bool servo1234detached = false;           // True if servos have been detached
@@ -57,6 +61,10 @@ bool servo891011detached = false;         // True if servos have been detached
 
 // Servo delay between activation and detaching (non blocking)
 unsigned long servoDelay = 1000;          // In ms
+
+// Launch event countdown start buzzer tone
+unsigned long buzzerStopTime = 27500;     // Time when buzzer will stop making the start tone before Countdown hits 0 (in ms)
+bool buzzerStopped = false;               // True if buzzer tone was stopped
 
 void setup() {
   // Begin communication to HC-12
@@ -94,8 +102,8 @@ void setup() {
   lcd.setCursor(0,1);
   lcd.print("Launch command");
 
-  delay(5000);
-  tone(Buzzer, 2000); delay(50); noTone(Buzzer); delay(75);
+  delay(10000);
+  tone(Buzzer, 2000); delay(500); noTone(Buzzer); delay(75);
   
   // Attach Servos and bring them in start position
   servo1.attach(0);
@@ -170,6 +178,12 @@ void loop() {
   if (countdownRunning) {
     calculateCountdown();
 
+    if(!buzzerStopped && countdownTime < buzzerStopTime) {
+      noTone(Buzzer);
+
+      buzzerStopped = true;
+    }
+    
     if(!servo1234activated && countdownTime < servo1234Time) {
       servo1.attach(0);
       servo2.attach(1);
@@ -237,28 +251,57 @@ void checkHC12() {
 
     // Check if 250 ms have passed since last input check
     if (millis() - last > 250) {
+      
+      // Start Signal
       if (input == 1) {
-        // Start Countdown
-        countdownStartTime = millis();
-        countdownRunning = true;
-        
-        lcd.clear();
-        lcd.setCursor(0,0);
-        lcd.print("Countdown");
+        // If the start signal was sent the first time
+        if(startSignalReceived == false) {
+          // Start Countdown
+          countdownStartTime = millis();
+          countdownRunning = true;
+          startSignalReceived = true;
+
+          // Turn BLUE LED on
+          digitalWrite(R_LED, HIGH);
+          digitalWrite(G_LED, HIGH);
+          digitalWrite(B_LED, LOW);
+
+
+          // Start buzzer tone
+          tone(Buzzer, 1000);
+
+          // Display Countdown
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Countdown");
+        }
       }
 
+      // Abort (pause) Signal
       if (input == 2) {
-        // Turn GREEN LED on
-        digitalWrite(R_LED, HIGH);
-        digitalWrite(G_LED, LOW);
-        digitalWrite(B_LED, HIGH);
+        // If the countdown is running -> abort
+        if(countdownRunning == true) {
+          countdownRunning = false;
 
-        // Turn off Pyro Channels
-        digitalWrite(Pyro1, LOW);
-        digitalWrite(Pyro2, LOW);
-        digitalWrite(Pyro3, LOW);
-        digitalWrite(Pyro4, LOW);
-        digitalWrite(Pyro5, LOW);
+          abortTime = millis();
+
+          // Turn RED LED on
+          digitalWrite(R_LED, LOW);
+          digitalWrite(G_LED, HIGH);
+          digitalWrite(B_LED, HIGH);
+        }
+        // If the countdown is already paused -> continue
+        else {
+          // Shift the countdownStartTime to take the abort time into account
+          countdownStartTime = countdownStartTime + (millis() - abortTime);
+          
+          countdownRunning = true;
+
+          // Turn BLUE LED on
+          digitalWrite(R_LED, HIGH);
+          digitalWrite(G_LED, HIGH);
+          digitalWrite(B_LED, LOW);
+        }
       }
     }
 
