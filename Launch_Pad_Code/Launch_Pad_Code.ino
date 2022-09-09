@@ -1,3 +1,17 @@
+/*
+ * Launch-Pad-Code
+ * 
+ * This is the source code for a launch pad specifically designed for model rockets with thrust vector control. 
+ * The launch pad has the ability to detect a radio signal from a remote control, which triggers a 30-second countdown. 
+ * It also includes various safety features such as stabilizers, strongback support, and clamp retraction to ensure a safe launch.
+ * 
+ * This version 1.0 was used for the first test flight of the rocket on Sep 03 2022.
+ * 
+ * @version 1.0
+ * @author Tom Kuttler
+ * @GitHub https://github.com/tomkuttler/TVC-Launch-Pad-Code
+ */
+
 #include <Servo.h>
 #include <Wire.h>
 #include <Adafruit_RGBLCDShield.h>
