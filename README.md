@@ -32,7 +32,7 @@ On startup the strongback needs to be held vertically, so the stbilizer can grab
 
 ## Features
 
-- Radio signal detection: The launch pad can detect the start radio signal from a remote control via a HC-12 radio module.
+- Radio signal detection: The launch pad can detect the start radio signal from a remote control via a HC-12 radio module. The software for the remote control is uploaded on a separate [Github repository](https://github.com/tomkuttler/TVC-Launch-Pad-Remote).
 - Countdown timer: The launch pad starts a countdown timer once the radio signal is detected. The countdown is 30 seconds long.
 - Stabilizers: 15 seconds before launch, the stabilizers, which provided additional stability to the rocket, will open.
 - Strongback retraction: 13 seconds before launch, the strongback of the launch pad will retract to clear the way for the rocket.
